@@ -3,4 +3,3 @@ mysql:
   port: "3306"
   user: "team"
   db_name: "meetings_db"
-  password: "![Gj8almosfcp9b804SLWjGw==]"
