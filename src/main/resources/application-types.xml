@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="postEvent" format="json">
+      <types:shape format="weave" example="examples/postEvent.json"><![CDATA[%dw 2.0
+
+type postEvent = {|
+  tittle: String, 
+  description: String, 
+  lat: Number {"typeId": "double"}, 
+  lng: Number {"typeId": "double"}, 
+  startDate: String, 
+  endDate: String, 
+  hidden: Boolean, 
+  user: {|
+    id: Number {"typeId": "int"}, 
+    name: String, 
+    lastName: String, 
+    avatarUrl: String
+  |}, 
+  status: {|
+    name: String, 
+    id: Number {"typeId": "int"}
+  |}, 
+  category: {|
+    name: String, 
+    id: Number {"typeId": "int"}
+  |}, 
+  images: Array<{|    title: String,     description: String,     url: String  |}>
+|} {"example": "{\\\"tittle\\\":\\\"Torneo Rel\u00E1mpago ABC\\\",\\\"description\\\":\\\"Torneo relampago femenil en el ABC de bernal. La inscripci\u00F3n son 5000 por equipo y el equipo ganador se lleva el pozo acumulado menos el alquiler de la cancha!!\\\",\\\"lat\\\":-34.60407189662275,\\\"lng\\\":-58.38800334935969,\\\"startDate\\\":\\\"2021\\/08\\/10 12:00:00\\\",\\\"endDate\\\":\\\"2021\\/08\\/10 16:00:00\\\",\\\"hidden\\\":false,\\\"user\\\":{\\\"id\\\":1,\\\"name\\\":\\\"John\\\",\\\"lastName\\\":\\\"Doe\\\",\\\"avatarUrl\\\":\\\"www.test.com\\/123.png\\\"},\\\"status\\\":{\\\"name\\\":\\\"\\\",\\\"id\\\":1},\\\"category\\\":{\\\"name\\\":\\\"\\\",\\\"id\\\":1},\\\"images\\\":[{\\\"title\\\":\\\"Torneo Rel\u00E1mpago ABC\\\",\\\"description\\\":\\\"\\\",\\\"url\\\":\\\"http:\\/\\/test.com\\/img\\/123123.png\\\"},{\\\"title\\\":\\\"Torneo Rel\u00E1mpago ABC\\\",\\\"description\\\":\\\"\\\",\\\"url\\\":\\\"http:\\/\\/test.com\\/img\\/73123.png\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#2cbd1186-8f9a-43d7-805f-6e79615f7a83">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="postEvent"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
