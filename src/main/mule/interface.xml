@@ -3,7 +3,7 @@
     <http:listener-config name="events-system-api-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="events-system-api-config" api="resource::3e0ab9a6-91f1-44e7-96d4-e5b1c83f8646:events-system-api:1.0.0:raml:zip:events-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="events-system-api-config" api="resource::3e0ab9a6-91f1-44e7-96d4-e5b1c83f8646:events-system-api-:1.0.0:raml:zip:events-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="events-system-api-main">
         <http:listener config-ref="events-system-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
