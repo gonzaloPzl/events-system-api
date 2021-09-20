@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="Copy_of_get:\categories\(category_id):events-system-api-config" doc:id="5052ea7b-2329-4bcf-83c5-d301938c6950" >
+		<db:select doc:name="Select" doc:id="0c8dfb72-6c0a-4f6d-b721-7994ec43e2c1" config-ref="meetings_db">
+			<db:sql ><![CDATA[SELECT *
+FROM events
+WHERE category_id = :varCategory_id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+'varCategory_id': attributes.uriParams.category_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Copy_of_Transform Message" doc:id="ca138218-9468-4121-8292-fb1754d340cd" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: payload.id,
+	title: payload.title,
+	description: payload.description,
+	lat: payload.lat,
+	lng: payload.lng,
+	startDate: payload.startDate,
+	endDate: payload.endDate,
+	hidden: payload.hidden,
+	status: {
+		id: payload.status_id
+	},
+	category: {
+		id: payload.category_id
+	},
+	name: "sports"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

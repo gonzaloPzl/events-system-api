@@ -1,0 +1,31 @@
+%dw 2.0
+
+type auto_5052ea7b_2329_4bcf_83c5_d301938c6950_Output_Payload = Array<{  images?: Array<Any>, 
+  lng?: Number, 
+  hidden: Boolean, 
+  endDate: String, 
+  description: String, 
+  id?: Number, 
+  category: {
+    name: String, 
+    id: Number, 
+    _?: Any
+  }, 
+  user: {
+    lastName: String, 
+    avatarUrl: String, 
+    name: String, 
+    id?: Number, 
+    _?: Any
+  }, 
+  tittle: String, 
+  lat?: Number, 
+  startDate: String, 
+  status: {
+    name: String, 
+    id: Number, 
+    _?: Any
+  }, 
+  _?: Any
+}>
+
