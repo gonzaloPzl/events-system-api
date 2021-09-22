@@ -1,0 +1,35 @@
+{
+  "tittle": "Torneo Relámpago ABC",
+  "description": "Torneo relampago femenil en el ABC de bernal. La inscripción son 5000 por equipo y el equipo ganador se lleva el pozo acumulado menos el alquiler de la cancha!!",
+  "lat": -34.60407189662275,
+  "lng": -58.38800334935969,
+  "startDate": "2021/08/10 12:00:00",
+  "endDate": "2021/08/10 16:00:00",
+  "hidden": false,
+  "user": {
+    "id": 1,
+    "name": "John",
+    "lastName": "Doe",
+    "avatarUrl": "www.test.com/123.png"
+  },
+  "status": {
+    "name": "",
+    "id": 1
+  },
+  "category": {
+    "name": "",
+    "id": 1
+  },
+  "images": [
+    {
+      "title": "Torneo Relámpago ABC",
+      "description": "",
+      "url": "http://test.com/img/123123.png"
+    },
+    {
+      "title": "Torneo Relámpago ABC",
+      "description": "",
+      "url": "http://test.com/img/73123.png"
+    }
+  ]
+}

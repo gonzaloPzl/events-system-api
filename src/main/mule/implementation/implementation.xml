@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="postEvent" doc:id="11276e8e-5402-481a-9432-e2265200e26d" >
+		<db:insert doc:name="postEvent" doc:id="2cbd1186-8f9a-43d7-805f-6e79615f7a83" config-ref="meetings_db">
+			<db:sql ><![CDATA[INSERT INTO events(title,description,hidden,lat,lng,startDate,endDate,status_id,category_id) 
+VALUES(:title,:description,:hidden,:lat,:lng,:startDate,:endDate,:status,:category)]]></db:sql>
+			<db:input-parameters ><![CDATA[{
+	'title': payload.title,
+	'description': payload.description,
+	'hidden': payload.hidden,
+	'lat': payload.lat,
+	'lng': payload.lng,
+	'startDate': payload.startDate,
+	'endDate': payload.endDate,
+	'status': payload.'status_id',
+	'category': payload.'category_id'
+}]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="facb697d-9f68-4f29-8b93-1072c0ed4f49" />
+	</flow>
+</mule>

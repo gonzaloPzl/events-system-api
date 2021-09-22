@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
     <http:listener-config name="events-system-api-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
@@ -434,48 +434,6 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\events:application\json:events-system-api-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  id: 1,
-  tittle: "Rock & roll en Antares",
-  description: "Cumplimos 8 años 😃🍻 Te esperamos desde las 11:00 hs para celebrar un nuevo cumple de nuestro amado",
-  lat: -34.60407189662275,
-  lng: -58.38800334935969,
-  startDate: "2021/08/10 10:00:00",
-  endDate: "2021/08/10 10:00:00",
-  hidden: false,
-  status: {
-    id: 1,
-    name: "incoming"
-  },
-  category: {
-    id: 2,
-    name: "party"
-  },
-  user: {
-    id: 25,
-    name: "Antares",
-    lastName: "Antares",
-    avatarUrl: "www.test.com/123.png"
-  },
-  images: [
-    {
-      tittle: "Antares te esperamos",
-      description: null,
-      url: "http://test.com/img/123123.png"
-    }, 
-    {
-      tittle: "Antares te esperamos",
-      description: null,
-      url: "http://test.com/img/123123.png"
-    }
-  ]
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="postEvent" doc:id="9e6dbd20-2162-4ce4-bb79-d38a72dad49c" name="postEvent"/>
     </flow>
 </mule>
