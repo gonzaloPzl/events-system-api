@@ -45,7 +45,15 @@ properties:
       name: string
       lastName: string
       avatarUrl: string
-  images?: array
+  images?:
+    type: array
+    items: 
+      type: object
+      properties:
+        id: number
+        alt: string
+        src: string
+        order: number
 ]]></types:shape>
     </types:type>
     <types:type name="auto_1cc10062-69ab-4720-aa5f-69f1d548603a_Input-Payload" format="java">
@@ -235,7 +243,7 @@ type: string]]></types:shape>
     <types:processor-declaration>
       <types:output-event>
         <types:message>
-          <types:payload type="EventMetaData[]"/>
+          <types:payload type="EventMetaData"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>
