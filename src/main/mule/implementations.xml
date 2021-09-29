@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="getRolesByUserIdAndEventId" doc:id="f70d34c1-2cd9-49f0-8a82-604e2735dfd2" >
 		<db:select doc:name="getFromDB" doc:id="4c9de421-0c61-473f-97a5-be6bcc60573d" config-ref="meetings_db">
 			<db:sql><![CDATA[SELECT roles.id, roles.name
@@ -31,6 +32,7 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<error-handler ref="errorHandlerGeneral" />
 	</flow>
 	<flow name="putRolesByUserIdAndEventId" doc:id="1c4a4423-6fc2-4f86-a0ac-0bcc5b7d5d4f">
 		<db:update doc:name="Update" doc:id="076bd2e4-7a83-41e7-86f7-caec9f68df27" config-ref="meetings_db">
@@ -47,38 +49,61 @@ AND event_id = :event]]></db:sql>
 }]]]></db:input-parameters>
 		</db:update>
 	</flow>
-	<flow name="getEvent" doc:id="1cc10062-69ab-4720-aa5f-69f1d548603a" >
-		<db:select doc:name="Copy_of_getFromDB" doc:id="6b1df565-28d2-4b7b-acc5-6c07d4fd0658" config-ref="meetings_db" >
-			<db:sql ><![CDATA[SELECT *
-FROM events
-WHERE id = :event_id]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{
+	<sub-flow name="getEvent" doc:id="da21328a-ef90-4661-8796-d7329c5313d8" >
+		<db:select doc:name="dbGetEvent" doc:id="6b1df565-28d2-4b7b-acc5-6c07d4fd0658" config-ref="meetings_db">
+			<db:sql><![CDATA[SELECT events.*, status.name AS statusName, categories.name AS categoriesName, users.id AS userId, users.name, users.lastName, users.avatarUrl, event_images.id AS image_id, event_images.alt, event_images.src, event_images.order
+FROM (events, users_events_roles)
+    INNER JOIN categories ON events.category_id = categories.id
+    INNER JOIN status ON events.status_id = status.id
+    INNER JOIN users ON users_events_roles.user_id = users.id
+    INNER JOIN event_images ON event_images.event_id = events.id
+WHERE events.id = :event_id
+GROUP BY events.id;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
 'event_id': attributes.uriParams.event_id 
 }]]]></db:input-parameters>
 		</db:select>
-		<ee:transform doc:name="Copy_of_transformJson" doc:id="09de05a8-a006-463d-b2e2-2da1b0d6e3bb" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<validation:is-not-null doc:name="Is not null" doc:id="dce2705a-5ca7-479f-bd41-5bc17f515c19" config-ref="Validation_Config" value="#[payload.id]" message="Event not found">
+			<error-mapping targetType="SYSTEM:NOT_FOUND" />
+		</validation:is-not-null>
+		<ee:transform doc:name="getEvent" doc:id="09de05a8-a006-463d-b2e2-2da1b0d6e3bb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 
 ---
 {
-	id: payload.id,
-	title: payload.title,
-	description: payload.description,
-	lat: payload.lat,
-	lng: payload.lng,
-	startDate: payload.startDate,
-	endDate: payload.endDate,
-	hidden: payload.hidden,
-	status: {
-		id: payload.status_id
-	},
-	category: {
-		id: payload.category_id
-	}
+    id: payload.id[0],
+    title: payload.title[0],
+    description: payload.description[0],
+    lat: payload.lat[0],
+    lng: payload.lng[0],
+    startDate: payload.startDate[0],
+    endDate: payload.endDate[0],
+    hidden: payload.hidden[0],
+    status: {
+        id: payload.status_id[0],
+        name: payload.statusname[0]
+    },
+    category: {
+        id: payload.category_id[0],
+        name: payload.categoriesname[0]
+    },
+    user: {
+        id: payload.userid[0],
+        name: payload.name[0],
+        lastName: payload.lastName[0],
+        avatarUrl: payload.avatarUrl[0]
+    },
+    images: payload map ( payload01 , indexOfPayload01 ) -> {
+        id: payload01.imagesid,
+        alt: payload01.alt,
+        src: payload01.src,
+        order: payload01.order,
+        event_id: payload01.id
+    }
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-	</flow>
+	</sub-flow>
 </mule>
