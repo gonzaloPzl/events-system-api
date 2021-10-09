@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="7f725028-7a66-4eeb-992f-8e33096f342a" />
+	<flow name="implementationsFlow" doc:id="36bacc04-863b-44fa-b7db-e7273841c54d" >
+		<db:select doc:name="Select" doc:id="97e7dfc8-aef6-4d89-9495-08fc16833f15" config-ref="meetings_db">
+			<db:sql ><![CDATA[SELECT * FROM `categories` WHERE id = :categories_id]]></db:sql>
+			<db:input-parameters ><![CDATA[#['categories_id': attributes.uriParams.category_id]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="aa43b86f-82b8-4d2d-8f3d-e2c91842e387" config-ref="Validation_Config" value="#[payload.id]" message="puto"/>
+		<ee:transform doc:name="Transform Message" doc:id="6965c211-3451-477b-87c8-d941050e4dc6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{  id: payload.id,
+   name: payload.name	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
